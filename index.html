@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Заработок">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Заработок</title>
+<style>
+:root{--bg:#edf0f4;--card:#fff;--ink:#1a2230;--mute:#66707f;--line:#d9dee6;--acc:#b8741a;--on:#fff;--sh:#27407a;--shbg:#dfe6f7;--bad:#b3372f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141d;--card:#182130;--ink:#eef2f8;--mute:#9aa6b8;--line:#263247;--acc:#e3a24a;--on:#1a1206;--sh:#8fb0ff;--shbg:#20315a;--bad:#ef7b72;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f141d;--card:#182130;--ink:#eef2f8;--mute:#9aa6b8;--line:#263247;--acc:#e3a24a;--on:#1a1206;--sh:#8fb0ff;--shbg:#20315a;--bad:#ef7b72;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.4 "Avenir Next",-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:520px;margin:0 auto;padding:16px 14px 40px}
+h1{font-size:15px;font-weight:600;color:var(--mute);margin:4px 2px 0}
+h2{font-size:17px;margin:0;font-weight:650}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.hero{padding:6px 2px 14px}
+.big{font-size:46px;font-weight:750;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.stats{display:flex;gap:18px;color:var(--mute);font-size:14px;margin-top:4px}
+.stats b{display:block;color:var(--ink);font-size:17px;font-weight:650;font-variant-numeric:tabular-nums}
+#remind{display:grid;gap:6px;margin-bottom:12px}
+#remind div{background:var(--shbg);color:var(--sh);border-radius:12px;padding:10px 14px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.nav{width:40px;height:40px;border-radius:10px;font-size:22px;color:var(--mute)}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.dow{font-size:12px;color:var(--mute);margin-bottom:4px}
+.grid button{aspect-ratio:1/1.08;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;border:2px solid transparent;font-variant-numeric:tabular-nums}
+.grid i{font-style:normal;font-size:16px}
+.grid small{font-size:10px;color:var(--mute);min-height:12px}
+.grid .shift{background:var(--shbg);color:var(--sh);font-weight:700}
+.grid .shift small{color:var(--sh)}
+.grid .today i{text-decoration:underline;text-underline-offset:3px}
+.grid .sel{border-color:var(--acc)}
+.legend{font-size:13px;color:var(--mute);margin:10px 0 0}
+.toggle{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);margin:10px 0;font-weight:600}
+.toggle.on{background:var(--shbg);color:var(--sh);border-color:var(--sh)}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:10px;padding:3px;margin-bottom:10px}
+.seg button{padding:10px;border-radius:8px;font-weight:600;color:var(--mute)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.row{display:flex;gap:8px}
+input[type=number],input[type=text],textarea{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg)}
+.add{padding:0 18px;border-radius:10px;background:var(--acc);color:var(--on);font-weight:700}
+#preview{min-height:22px;margin:8px 2px;color:var(--mute);font-variant-numeric:tabular-nums}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 2px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+li span{color:var(--mute);font-size:14px}
+li .x{color:var(--bad);width:36px;height:36px;font-size:18px}
+.empty{color:var(--mute);font-size:14px;padding:6px 2px}
+summary{cursor:pointer;font-weight:600}
+.set{display:grid;grid-template-columns:1fr 110px;gap:8px;align-items:center;margin-top:10px;font-size:15px}
+textarea{height:90px;margin-top:10px;font-size:13px}
+.btns{display:flex;gap:8px;margin-top:8px}
+.btns button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);font-weight:600}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Заработок</h1>
+<div class="hero">
+  <div class="big" id="tAll">0 ₽</div>
+  <div class="stats"><div>Сегодня<b id="tToday"></b></div><div id="mLbl">Месяц<b id="tMonth"></b></div></div>
+</div>
+<div id="remind"></div>
+
+<section class="card">
+  <div class="head"><button class="nav" id="prev" aria-label="Предыдущий месяц">‹</button><h2 id="title"></h2><button class="nav" id="next" aria-label="Следующий месяц">›</button></div>
+  <div class="dow"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
+  <div class="grid" id="grid"></div>
+  <p class="legend">Нажмите на день, чтобы выбрать его. Синим отмечены смены, внизу клетки — заработок за день. Ночную смену отмечайте днём её начала.</p>
+</section>
+
+<section class="card">
+  <h2 id="dayTitle"></h2>
+  <button class="toggle" id="shiftBtn"></button>
+  <div class="seg"><button data-m="box" class="on">Ящики</button><button data-m="kol">Колхозы</button></div>
+  <div class="row"><input id="qty" type="number" inputmode="decimal" min="0" placeholder="Количество позиций"><button class="add" id="add">Добавить</button></div>
+  <div id="preview"></div>
+  <ul id="list"></ul>
+</section>
+
+<details class="card">
+  <summary>Ставки и резервная копия</summary>
+  <div class="set"><label for="rBox">Ящики, ₽ за позицию</label><input id="rBox" type="number" inputmode="decimal" step="0.01"></div>
+  <div class="set"><label for="rKol">Колхозы, ₽ за позицию</label><input id="rKol" type="number" inputmode="decimal" step="0.01"></div>
+  <div class="set"><label for="rBon">Доплата к ящикам, ₽ за позицию</label><input id="rBon" type="number" inputmode="decimal" step="0.01"></div>
+  <p class="note">Новая ставка действует для новых записей, старые не пересчитываются.</p>
+  <textarea id="bk" placeholder="Здесь появится копия данных. Чтобы восстановить, вставьте её сюда."></textarea>
+  <div class="btns"><button id="exp">Скопировать данные</button><button id="imp">Восстановить</button></div>
+  <p class="note" id="bkMsg">Данные хранятся только в браузере этого телефона. Делайте копию время от времени и открывайте сайт всегда одним способом: либо из Safari, либо с иконки на экране «Домой».</p>
+</details>
+</main>
+<script>
+(function(){
+var KEY='zarabotok.v1', mem=null;
+function blank(){return {shifts:{},entries:{},rates:{box:0.86,kol:0.35},bonus:0}}
+function load(){
+  try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s),b=blank();for(var k in b){if(o[k]!==undefined)b[k]=o[k]}return b}}catch(e){}
+  return mem||blank();
+}
+var S=load();
+function save(){mem=S;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var $=function(id){return document.getElementById(id)};
+var pad=function(n){return String(n).padStart(2,'0')};
+var iso=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+var fromIso=function(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])};
+var r2=function(n){return Math.round(n*100)/100};
+var nf=new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2});
+var rub=function(n){return nf.format(r2(n))+' ₽'};
+var NAMES={box:'Ящики',kol:'Колхозы'};
+var now=new Date(), view={y:now.getFullYear(),m:now.getMonth()}, sel=iso(now), mode='box';
+
+function dayTotal(d){return (S.entries[d]||[]).reduce(function(a,e){return a+e.s},0)}
+function sumPrefix(p){var t=0;for(var d in S.entries){if(d.indexOf(p)===0)t+=dayTotal(d)}return t}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function longDate(s){return fromIso(s).toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})}
+
+function reminders(){
+  var t=new Date(), a=iso(t), n=new Date(t.getFullYear(),t.getMonth(),t.getDate()+1), h='';
+  if(S.shifts[a])h+='<div>Сегодня смена</div>';
+  if(S.shifts[iso(n)])h+='<div>Завтра смена</div>';
+  if(!h){
+    var next=Object.keys(S.shifts).filter(function(d){return d>a}).sort()[0];
+    if(next)h='<div>Ближайшая смена: '+fromIso(next).toLocaleDateString('ru-RU',{weekday:'short',day:'numeric',month:'long'})+'</div>';
+  }
+  $('remind').innerHTML=h;
+}
+
+function render(){
+  var a=iso(new Date()), p=view.y+'-'+pad(view.m+1);
+  $('tAll').textContent=rub(sumPrefix(''));
+  $('tToday').textContent=rub(dayTotal(a));
+  $('mLbl').firstChild.nodeValue=cap(new Date(view.y,view.m,1).toLocaleDateString('ru-RU',{month:'long'}));
+  $('tMonth').textContent=rub(sumPrefix(p));
+  $('title').textContent=cap(new Date(view.y,view.m,1).toLocaleDateString('ru-RU',{month:'long',year:'numeric'}));
+  var lead=(new Date(view.y,view.m,1).getDay()+6)%7, days=new Date(view.y,view.m+1,0).getDate(), h='',i;
+  for(i=0;i<lead;i++)h+='<span></span>';
+  for(i=1;i<=days;i++){
+    var d=p+'-'+pad(i), t=dayTotal(d), c=(S.shifts[d]?'shift ':'')+(d===a?'today ':'')+(d===sel?'sel':'');
+    h+='<button class="'+c+'" data-d="'+d+'"><i>'+i+'</i><small>'+(t?Math.round(t):'')+'</small></button>';
+  }
+  $('grid').innerHTML=h;
+  $('dayTitle').textContent=cap(longDate(sel));
+  var sb=$('shiftBtn'), on=!!S.shifts[sel];
+  sb.textContent=on?'Смена отмечена, нажмите чтобы убрать':'Отметить смену';
+  sb.className='toggle'+(on?' on':'');
+  var es=S.entries[sel]||[], l='';
+  es.forEach(function(e,k){
+    l+='<li><div>'+NAMES[e.m]+'<span> · '+nf.format(e.q)+' × '+nf.format(r2(e.r+e.b))+'</span></div><div><b>'+rub(e.s)+'</b><button class="x" data-k="'+k+'" aria-label="Удалить">✕</button></div></li>';
+  });
+  $('list').innerHTML=l||'<div class="empty">За этот день записей нет.</div>';
+  reminders();
+  preview();
+}
+
+function rateFor(m){return {r:+S.rates[m]||0,b:m==='box'?(+S.bonus||0):0}}
+function qtyVal(){var q=parseFloat($('qty').value.replace(',','.'));return q>0?q:0}
+function preview(){
+  var q=qtyVal(), x=rateFor(mode);
+  $('preview').textContent=q?nf.format(q)+' × '+nf.format(r2(x.r+x.b))+' = '+rub(q*(x.r+x.b)):'';
+}
+function add(){
+  var q=qtyVal(); if(!q)return;
+  var x=rateFor(mode);
+  (S.entries[sel]=S.entries[sel]||[]).push({m:mode,q:q,r:x.r,b:x.b,s:r2(q*(x.r+x.b))});
+  save(); $('qty').value=''; render();
+}
+
+$('grid').onclick=function(ev){var b=ev.target.closest('button');if(b){sel=b.dataset.d;render()}};
+$('shiftBtn').onclick=function(){if(S.shifts[sel])delete S.shifts[sel];else S.shifts[sel]=1;save();render()};
+$('list').onclick=function(ev){
+  var b=ev.target.closest('.x');if(!b)return;
+  S.entries[sel].splice(+b.dataset.k,1);
+  if(!S.entries[sel].length)delete S.entries[sel];
+  save();render();
+};
+document.querySelector('.seg').onclick=function(ev){
+  var b=ev.target.closest('button');if(!b)return;
+  mode=b.dataset.m;
+  [].forEach.call(this.children,function(x){x.className=x===b?'on':''});
+  preview();
+};
+$('add').onclick=add;
+$('qty').oninput=preview;
+$('qty').onkeydown=function(e){if(e.key==='Enter')add()};
+$('prev').onclick=function(){view.m--;if(view.m<0){view.m=11;view.y--}render()};
+$('next').onclick=function(){view.m++;if(view.m>11){view.m=0;view.y++}render()};
+
+function setRate(id,fn){
+  var el=$(id);
+  el.oninput=function(){var v=parseFloat(el.value.replace(',','.'));if(v>=0){fn(v);save();preview()}};
+}
+$('rBox').value=S.rates.box;$('rKol').value=S.rates.kol;$('rBon').value=S.bonus;
+setRate('rBox',function(v){S.rates.box=v});
+setRate('rKol',function(v){S.rates.kol=v});
+setRate('rBon',function(v){S.bonus=v});
+
+$('exp').onclick=function(){
+  var t=$('bk');t.value=JSON.stringify(S);t.select();
+  var ok=false;try{ok=document.execCommand('copy')}catch(e){}
+  $('bkMsg').textContent=ok?'Копия скопирована. Вставьте её в заметки или сообщение себе.':'Копия в поле выше. Выделите её и скопируйте вручную.';
+};
+$('imp').onclick=function(){
+  try{
+    var o=JSON.parse($('bk').value);
+    if(!o||typeof o.entries!=='object')throw 0;
+    var b=blank();for(var k in b){if(o[k]!==undefined)b[k]=o[k]}
+    S=b;save();
+    $('rBox').value=S.rates.box;$('rKol').value=S.rates.kol;$('rBon').value=S.bonus;
+    $('bkMsg').textContent='Данные восстановлены.';render();
+  }catch(e){$('bkMsg').textContent='Не получилось прочитать копию. Вставьте её целиком, без изменений.'}
+};
+render();
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
+})();
+</script>
+</body>
+</html>
